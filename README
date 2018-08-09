@@ -1,5 +1,7 @@
 Make sure you have sbt and jdk in your machine and paths.
 
+To use with Spark: The details are here: <https://mindfulmachines.io/blog/2018/3/18/wikipedia-data-in-spark-and-scala-updated>
+
 To generate something like this repo (not exactly same structure) you can simply run the following in commandline:
 
     PROJECT_NAME='myproj'
