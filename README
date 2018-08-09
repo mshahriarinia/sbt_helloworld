@@ -1,6 +1,6 @@
 Make sure you have sbt and jdk in your machine and paths.
 
-To recreate this repo
+To generate something like this repo (not exactly same structure) you can simply run the following in commandline:
 
     PROJECT_NAME='myproj'
     mkdir $PROJECT_NAME
