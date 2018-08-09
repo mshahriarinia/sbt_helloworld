@@ -1,0 +1,41 @@
+Make sure you have sbt and jdk in your machine and paths.
+
+To recreate this repo
+
+    PROJECT_NAME='myproj'
+    mkdir $PROJECT_NAME
+    cd $PROJECT_NAME
+    COMPANY_PATH='/com/morty/'
+    mkdir -p src/{main,test}/{java,scala}$COMPANY_PATH
+    mkdir -p lib project target
+
+    # touch src/{main,test}/{java,scala}$COMPANY_PATH.gitkeep  # keep empty directories in git to maintain directory structure.
+
+    # create an initial build.sbt file
+    echo 'name := '\"$PROJECT_NAME\"'
+
+    version := "1.0"
+
+    scalaVersion := "2.11.8"  // MAKE SURE THIS IS THE CORRECT VERSION ON THE MACHINE
+
+    //libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+    ' > build.sbt
+
+    curl https://www.gitignore.io/api/scala,sbt,intellij,java > .gitignore
+    echo 'object Main extends App {
+            Console.println("Hello World!")
+             }' > src/main/scala/HelloWorld.scala
+
+             sbt compile  
+             sbt run
+             ls -a
+             sbt package
+             scala target/scala-2.11/myproj_2.11-1.0.jar
+
+   # to create a fat jar containing all the dependencies
+    echo 'addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.6")' > project/assembly.sbt
+
+    sbt assembly
+    java -jar /Users/morteza/zProject/test/mylala/myproj/target/scala-2.11/myproj-assembly-1.0.jar
+
+v
