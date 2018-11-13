@@ -1,5 +1,6 @@
 
 # Created by https://www.gitignore.io/api/scala,sbt,intellij,java
+# Edit at https://www.gitignore.io/?templates=scala,sbt,intellij,java
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
@@ -11,6 +12,9 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+
+# Generated files
+.idea/**/contentModel.xml
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
@@ -63,6 +67,9 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
+
 ### Intellij Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
@@ -114,6 +121,5 @@ project/plugins/project/
 .lib/
 
 ### Scala ###
-
 
 # End of https://www.gitignore.io/api/scala,sbt,intellij,java
