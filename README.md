@@ -4,6 +4,7 @@ To use with Spark: The details are here: <https://mindfulmachines.io/blog/2018/3
 
 To generate something like this repo (not exactly same structure) you can simply run the following in commandline:
 
+```scala
     PROJECT_NAME='myproj'
     mkdir $PROJECT_NAME
     cd $PROJECT_NAME
@@ -159,4 +160,4 @@ To generate something like this repo (not exactly same structure) you can simply
     ls -a
     sbt package
     scala target/scala-2.11/"$PROJECT_NAME"_2.11-1.0.jar
-    
+```    
