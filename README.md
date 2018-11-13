@@ -7,7 +7,7 @@ To generate something like this repo (not exactly same structure) you can simply
     PROJECT_NAME='myproj'
     mkdir $PROJECT_NAME
     cd $PROJECT_NAME
-    COMPANY_PATH='/com/morty/'
+    COMPANY_PATH='/com/morteza/'
     mkdir -p src/{main,test}/{java,scala}$COMPANY_PATH
     mkdir -p lib project target
     
@@ -22,6 +22,10 @@ To generate something like this repo (not exactly same structure) you can simply
     
     scalaVersion := "2.11.8"  // MAKE SURE THIS IS THE CORRECT VERSION ON THE MACHINE
     
+    libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.0" // Commandline parameters parser
+    libraryDependencies += "io.circe" %% "circe-core" % "0.9.1" // circe is used for case class to json
+    libraryDependencies += "io.circe" %% "circe-generic" % "0.9.1"
+    libraryDependencies += "io.circe" %% "circe-parser" % "0.9.1"
     //libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
     libraryDependencies += "org.apache.spark" %% "spark-core" % "2.2.1" //% "provided"
     libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.2.1" //% "provided"
@@ -69,12 +73,90 @@ To generate something like this repo (not exactly same structure) you can simply
         }
      }' > src/main/scala/HelloWorld.scala
     
+    
+    echo '
+    package com.morteza
+    
+    import scopt.OptionParser
+    
+    /**
+      * Define commandline arguments and how to treat them
+      */
+    case class Args(input: String = null,
+                    output: String = null,
+                    timestamp: String = null
+                   )
+    
+    object Args {
+      val optionParser: OptionParser[Args] = new scopt.OptionParser[Args]("Wikidata") {
+        head("This program runs a spark job on wikidata.")
+    
+        // call opt()  which needs arg type, and short and long form param name
+        opt[String]('i', "input")
+          .required()
+          .text("input is the input path")
+          .action {
+            (paramValue: String, argsCopy: Args) =>
+              argsCopy.copy(input = paramValue)
+          }
+    
+        opt[String]('o', "output")
+          .required()
+          .text("output is the output path")
+          .action {
+            (paramValue: String, argsCopy: Args) =>
+              argsCopy.copy(output = paramValue)
+          }
+      }
+    }' > src/main/scala/com/morteza/Args.scala
+    
+    echo '
+    package com.morteza
+    
+    import java.text.SimpleDateFormat
+    import java.util.Calendar
+    
+    import org.apache.spark.sql.SparkSession
+    
+    object Main {
+    
+      def initSpark(args: Args): Unit = {
+        if (args.input.substring(0, 4).equals("gs://")) {
+          println("Input is NOT local, setting master to default.")
+          SparkSession.builder.appName("Wiki-links Data Processor Job").getOrCreate()
+        }
+        else {
+          println("Input is local, setting local master for spark.")
+          SparkSession.builder.appName("Wiki-links Data Processor Job").master("local[2]").getOrCreate()
+        }
+      }
+    
+      def process(args: Args): Unit = {
+        initSpark(args)
+        val sparkSession = SparkSession.builder().getOrCreate()
+        val sparkContext = sparkSession.sparkContext
+    
+      }
+    
+      def main(args: Array[String]): Unit = {
+        Args.optionParser.parse(args, Args()) map { args: Args =>
+          val format = new SimpleDateFormat("y_M_d__H_m_s")
+          val nowStr = format.format(Calendar.getInstance().getTime)
+    
+          process(args.copy(timestamp = nowStr))
+        } getOrElse {
+          println("arguments are not properly provided, terminating.")
+          System.exit(0)
+        }
+      }
+    }' > src/main/scala/com/morteza/Main.scala
+    
+    sbt assembly
+    java -jar /Users/morteza/zProject/test/mylala/myproj/target/scala-2.11/myproj-assembly-1.0.jar
+    
     sbt compile  
     sbt run
     ls -a
     sbt package
     scala target/scala-2.11/"$PROJECT_NAME"_2.11-1.0.jar
     
-    
-    sbt assembly
-    java -jar /Users/morteza/zProject/test/mylala/myproj/target/scala-2.11/myproj-assembly-1.0.jar    
